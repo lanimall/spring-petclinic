@@ -2,6 +2,8 @@
          xsi:noNamespaceSchemaLocation="ehcache.xsd"
          updateCheck="false">
     <diskStore path="java.io.tmpdir"/>
+    
+    <terracottaConfig url="${tsa_hostname}:9510"/>
 
     <!-- objects are evicted from the cache every 60 seconds -->
     <cache name="vets"
@@ -9,9 +11,11 @@
            maxElementsInMemory="100"
            eternal="false"
            overflowToDisk="false"
-           maxElementsOnDisk="10000000"
+           maxEntriesInCache="10000000"
            diskPersistent="false"
            diskExpiryThreadIntervalSeconds="1"
-           memoryStoreEvictionPolicy="LRU"/>
+           memoryStoreEvictionPolicy="LRU">
+        <terracotta/>
+    </cache>
 
 </ehcache>
