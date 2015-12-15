@@ -3,15 +3,18 @@
          updateCheck="false">
     <diskStore path="java.io.tmpdir"/>
 
+    <terracottaConfig url="${tsa_hostname}:9510"/>
+
     <!-- objects are evicted from the cache every 60 seconds -->
     <cache name="vets"
            timeToLiveSeconds="60"
            maxElementsInMemory="100"
            eternal="false"
            overflowToDisk="false"
-           maxElementsOnDisk="10000000"
            diskPersistent="false"
            diskExpiryThreadIntervalSeconds="1"
-           memoryStoreEvictionPolicy="LRU"/>
+           memoryStoreEvictionPolicy="LRU">
+        <terracotta/>
+    </cache>
 
 </ehcache>
