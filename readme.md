@@ -1,6 +1,12 @@
 # Spring PetClinic Sample Application
 
 
+## Docker instructions, this image needs a mysql container :
+
+    $ docker run --name db -e MYSQL_ROOT_PASSWORD=petclinic -e MYSQL_DATABASE=petclinic  -d mysql
+    $ docker run -d -p 8080:8080 --link db:db --name petclinic petclinic
+
+
 ## Understanding the Spring Petclinic application with a few diagrams
 <a href="https://speakerdeck.com/michaelisvy/spring-petclinic-sample-application">See the presentation here</a>
 

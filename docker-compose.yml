@@ -1,0 +1,12 @@
+petclinic:
+  build: .
+  links:
+   - db
+  ports:
+   - "8080:8080"
+  command: /bin/sh -c 'sleep 40 && catalina.sh run'
+db:
+  image: mysql:latest
+  environment:
+    MYSQL_ROOT_PASSWORD: petclinic
+    MYSQL_DATABASE: petclinic
