@@ -135,14 +135,13 @@
 
         <!-- EhCache -->
         <dependency>
-            <groupId>net.sf.ehcache</groupId>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>3.1.1</version>
         </dependency>
 
         <!-- Test Artifacts -->

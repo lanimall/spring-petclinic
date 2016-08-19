@@ -1,0 +1,11 @@
+<config xmlns="http://www.ehcache.org/v3">
+
+    <cache alias="vets" uses-template="simple"/>
+
+    <cache-template name="simple">
+        <expiry>
+            <ttl unit="seconds">5</ttl>
+        </expiry>
+        <heap>10</heap>
+    </cache-template>
+</config>

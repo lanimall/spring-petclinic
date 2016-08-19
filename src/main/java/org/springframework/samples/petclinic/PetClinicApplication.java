@@ -16,10 +16,18 @@
 
 package org.springframework.samples.petclinic;
 
+import org.ehcache.CacheManager;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
+import org.springframework.context.annotation.Bean;
+
+import java.util.Collection;
+
+import static org.ehcache.config.builders.CacheConfigurationBuilder.newCacheConfigurationBuilder;
+import static org.ehcache.config.builders.CacheManagerBuilder.newCacheManagerBuilder;
+import static org.ehcache.config.builders.ResourcePoolsBuilder.heap;
 
 /**
  * PetClinic Spring Boot Application.
@@ -27,6 +35,13 @@ import org.springframework.boot.context.web.SpringBootServletInitializer;
  */
 @SpringBootApplication
 public class PetClinicApplication extends SpringBootServletInitializer {
+
+    @Bean
+    CacheManager ehcacheManager() {
+        return newCacheManagerBuilder()
+            .withCache("ownersSearch", newCacheConfigurationBuilder(String.class, Collection.class, heap(10)))
+            .build(true);
+    }
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
