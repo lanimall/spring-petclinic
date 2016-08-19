@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
+import org.ehcache.CacheManager;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Test;
@@ -56,6 +57,9 @@ public abstract class AbstractClinicServiceTests {
     @Autowired
     protected ClinicService clinicService;
 
+    @Autowired
+    protected CacheManager cacheManager;
+
     @Test
     public void shouldFindOwnersByLastName() {
         Collection<Owner> owners = this.clinicService.findOwnerByLastName("Davis");
@@ -89,6 +93,12 @@ public abstract class AbstractClinicServiceTests {
         this.clinicService.saveOwner(owner);
         assertThat(owner.getId().longValue()).isNotEqualTo(0);
 
+        owners = this.clinicService.findOwnerByLastName("Schultz");
+        // no new entries, since we got a cached result !
+        assertThat(owners.size()).isEqualTo(found);
+
+        // let's clear the cache and try again !
+        cacheManager.getCache("ownersSearch", String.class, Collection.class).clear();
         owners = this.clinicService.findOwnerByLastName("Schultz");
         assertThat(owners.size()).isEqualTo(found + 1);
     }
