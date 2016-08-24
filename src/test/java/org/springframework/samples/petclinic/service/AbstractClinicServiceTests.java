@@ -22,8 +22,11 @@ import java.util.Collection;
 import org.ehcache.CacheManager;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.jcache.JCacheCacheManager;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
@@ -58,7 +61,7 @@ public abstract class AbstractClinicServiceTests {
     protected ClinicService clinicService;
 
     @Autowired
-    protected CacheManager cacheManager;
+    protected JCacheCacheManager cacheManager;
 
     @Test
     public void shouldFindOwnersByLastName() {
@@ -98,7 +101,7 @@ public abstract class AbstractClinicServiceTests {
         assertThat(owners.size()).isEqualTo(found);
 
         // let's clear the cache and try again !
-        cacheManager.getCache("ownersSearch", String.class, Collection.class).clear();
+        cacheManager.getCacheManager().getCache("ownersSearch", Object.class, Object.class).clear();
         owners = this.clinicService.findOwnerByLastName("Schultz");
         assertThat(owners.size()).isEqualTo(found + 1);
     }

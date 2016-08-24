@@ -18,11 +18,15 @@ package org.springframework.samples.petclinic.service;
 import java.util.Collection;
 
 import org.ehcache.Cache;
-import org.ehcache.CacheManager;
+import org.ehcache.clustered.client.config.builders.ClusteredResourcePoolBuilder;
+import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.config.units.MemoryUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.jcache.JCacheCacheManager;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
@@ -36,6 +40,10 @@ import org.springframework.samples.petclinic.repository.VisitRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.ehcache.config.builders.CacheConfigurationBuilder.newCacheConfigurationBuilder;
+import static org.ehcache.config.builders.ResourcePoolsBuilder.heap;
+import static org.ehcache.jsr107.Eh107Configuration.fromEhcacheCacheConfiguration;
+
 /**
  * Mostly used as a facade for all Petclinic controllers
  * Also a placeholder for @Transactional and @Cacheable annotations
@@ -47,7 +55,7 @@ public class ClinicServiceImpl implements ClinicService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("org.ehcache.Demo");
 
-    private final Cache<String, Collection> ownersSearchCache;
+    private final Cache<Object, Object> ownersSearchCache;
 
     private PetRepository petRepository;
     private VetRepository vetRepository;
@@ -56,12 +64,23 @@ public class ClinicServiceImpl implements ClinicService {
 
     @Autowired
     public ClinicServiceImpl(PetRepository petRepository, VetRepository vetRepository, OwnerRepository ownerRepository,
-                             VisitRepository visitRepository, CacheManager ehcacheManager) {
+                             VisitRepository visitRepository, JCacheCacheManager jCacheCacheManager,
+                             Environment environment) {
         this.petRepository = petRepository;
         this.vetRepository = vetRepository;
         this.ownerRepository = ownerRepository;
         this.visitRepository = visitRepository;
-        ownersSearchCache = ehcacheManager.getCache("ownersSearch", String.class, Collection.class);
+
+
+        ResourcePoolsBuilder resourcePoolsBuilder =
+            environment.acceptsProfiles("test") ? heap(10) : heap(10)
+            .with(ClusteredResourcePoolBuilder.clusteredDedicated(10, MemoryUnit.MB));
+        ownersSearchCache = jCacheCacheManager.getCacheManager().getCache("ownersSearch") != null ?
+            jCacheCacheManager.getCacheManager().getCache("ownersSearch").unwrap(Cache.class) :
+            jCacheCacheManager.getCacheManager().createCache("ownersSearch", fromEhcacheCacheConfiguration(
+            newCacheConfigurationBuilder(Object.class, Object.class,
+                resourcePoolsBuilder
+            ))).unwrap(Cache.class);
     }
 
     @Override
@@ -80,7 +99,7 @@ public class ClinicServiceImpl implements ClinicService {
     @Transactional(readOnly = true)
     public Collection<Owner> findOwnerByLastName(String lastName)
         throws DataAccessException {
-        Collection<Owner> cachedOwners = ownersSearchCache.get(lastName);
+        Collection<Owner> cachedOwners = (Collection<Owner>) ownersSearchCache.get(lastName);
         if (cachedOwners != null) {
             LOGGER.info("Returning cached result for {}", lastName);
             return cachedOwners;

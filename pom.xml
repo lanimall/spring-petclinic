@@ -141,7 +141,12 @@
         <dependency>
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>
-            <version>3.1.1</version>
+            <version>3.1.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache-clustered</artifactId>
+            <version>3.1.2-SNAPSHOT</version>
         </dependency>
 
         <!-- Test Artifacts -->
@@ -352,4 +357,16 @@
     </reporting>
 
     <url>demopetclinic</url>
+    <repositories>
+        <repository>
+            <id>oss.sonatype.org-snapshot</id>
+            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>
