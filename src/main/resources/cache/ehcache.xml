@@ -3,7 +3,7 @@
          updateCheck="false">
     <diskStore path="java.io.tmpdir"/>
 
-    <terracottaConfig url="${tsa_hostname}:9510"/>
+    <terracottaConfig url="${tsa_url}"/>
 
     <!-- objects are evicted from the cache every 60 seconds -->
     <cache name="vets"
