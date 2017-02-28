@@ -25,9 +25,11 @@
         <tomcat.version>7.0.59</tomcat.version>
 
         <!-- EhCache version -->
+        <ehcache.artifactid>ehcache</ehcache.artifactid>
         <ehcache.version>2.10.2</ehcache.version>
 
         <!-- Terracotta toolkit runtime -->
+        <terracotta-toolkit-runtime.artifactid>terracotta-toolkit-runtime</terracotta-toolkit-runtime.artifactid>
         <terracotta-toolkit-runtime.version>4.3.2</terracotta-toolkit-runtime.version>
 
         <!-- Terracotta toolkit location -->
@@ -228,7 +230,7 @@
         </dependency>
         <dependency>
             <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
+            <artifactId>${ehcache.artifactid}</artifactId>
             <version>${ehcache.version}</version>
             <exclusions>
                 <exclusion>
@@ -239,7 +241,7 @@
         </dependency>
         <dependency>
             <groupId>org.terracotta</groupId>
-            <artifactId>terracotta-toolkit-runtime</artifactId>
+            <artifactId>${terracotta-toolkit-runtime.artifactid}</artifactId>
             <version>${terracotta-toolkit-runtime.version}</version>
         </dependency>
 
